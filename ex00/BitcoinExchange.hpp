@@ -1,21 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   BitcoinExchange.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/30 21:44:24 by yuliano           #+#    #+#             */
-/*   Updated: 2026/05/01 17:19:59 by ypacileo         ###   ########.fr       */
+/*   Created: 2026/05/01 14:45:39 by ypacileo          #+#    #+#             */
+/*   Updated: 2026/05/01 16:15:58 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <iostream>
-#include "BitcoinExchange.hpp"
+#ifndef BitcoinExchange_HPP
+#define BitcoinExchange_HPP
 
-int main()
+#include <map>
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <iostream>
+
+class BitcoinExchange
 {
-    BitcoinExchange bit;
-    bit.uploadfile();
-    return (0);
-}
+	private:
+	
+	std::map<std::string, std::string>map;
+
+	public:
+	BitcoinExchange();
+	~BitcoinExchange();
+	void uploadfile();
+};
+
+#endif
