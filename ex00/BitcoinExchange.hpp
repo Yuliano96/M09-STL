@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BitcoinExchange.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/01 14:45:39 by ypacileo          #+#    #+#             */
-/*   Updated: 2026/05/01 16:15:58 by ypacileo         ###   ########.fr       */
+/*   Updated: 2026/05/06 21:24:23 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,9 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <exception>
+#include <cstdlib>
+#include <algorithm>
 
 class BitcoinExchange
 {
@@ -26,9 +29,12 @@ class BitcoinExchange
 	std::map<std::string, std::string>map;
 
 	public:
+	typedef typename std::map<std::string, std::string>::iterator iterator;
 	BitcoinExchange();
 	~BitcoinExchange();
-	void uploadfile();
+	bool isDatevaild(const std::string &date);
+	iterator searchDate(const std::string &date);
+	void uploadfile(const std::string &filename);
 };
 
 #endif
