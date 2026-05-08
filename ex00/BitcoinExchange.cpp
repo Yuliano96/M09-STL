@@ -6,7 +6,7 @@
 /*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/01 15:37:00 by ypacileo          #+#    #+#             */
-/*   Updated: 2026/05/06 21:24:40 by yuliano          ###   ########.fr       */
+/*   Updated: 2026/05/08 19:38:25 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,14 +39,14 @@ bool BitcoinExchange::isDatevaild(const std::string &date)
 
 BitcoinExchange::iterator BitcoinExchange::searchDate(const std::string &date)
 {
-    iterator it = map.lower_bound(date);
+    iterator it = mapData.lower_bound(date);
     
-    if (it != map.end() && it ->first == date)
+    if (it != mapData.end() && it ->first == date)
         return it;
-    else if(it == map.begin())
+    else if(it == mapData.begin())
     {
         std::cerr<<"date not found\n";
-        return map.end();
+        return mapData.end();
     }
     else
     {
@@ -55,9 +55,9 @@ BitcoinExchange::iterator BitcoinExchange::searchDate(const std::string &date)
     }
 }
 
-void BitcoinExchange::uploadfile(const std::string &filename)
+void BitcoinExchange::uploadfile(const std::string &fileName, std::map<std::string,std::string>&map, char delim)
 {
-    std::ifstream in(filename);
+    std::ifstream in(fileName.c_str());
 	std::string line, date, value;
 	bool headerSkipped = false;
 	
@@ -76,20 +76,27 @@ void BitcoinExchange::uploadfile(const std::string &filename)
             continue;
         }
         std::stringstream ss(line);
-		if (std::getline(ss, date, ',') && std::getline(ss, value))
-        {
-            if (isDatevaild(date))
-            	map.insert(std::pair<std::string, std::string>(date, value));
-            else 
-            	std::cerr << "Error: invalid date => " << date << std::endl;
-        }
+		if (std::getline(ss, date, delim) && std::getline(ss, value))
+            map[date] = value;
     }
     in.close();
+}
 
-    // 3. MOSTRAR RESULTADOS
-    // std::map<std::string, std::string>::iterator it;
-    // for (it = map.begin(); it != map.end(); ++it)
-    // {
-    //     std::cout << it->first << " | " << it->second << std::endl;
-    // }
+void BitcoinExchange::printBtc(const std::string &dataBase, const std::string &fileInput)
+{
+    iterator itInput, itData;
+    uploadfile(dataBase, mapData, ',');
+    uploadfile(fileInput, mapInput, '|');
+
+    for (itInput = mapInput.begin(); itInput != mapInput.end(); ++itInput)
+    {
+        
+        if(isDatevaild(itInput->first))
+        {
+            itData = searchDate(itInput->first);
+			std::cout<<itInput->first<< " => \n";
+        }
+        else
+            std::cerr<<"invalid data =>"<<itInput->first << std::endl;
+    }
 }
