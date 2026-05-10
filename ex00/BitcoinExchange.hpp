@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BitcoinExchange.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/01 14:45:39 by ypacileo          #+#    #+#             */
-/*   Updated: 2026/05/09 22:46:36 by yuliano          ###   ########.fr       */
+/*   Updated: 2026/05/10 14:04:15 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 
 # include <map>
 # include <string>
+
+
 
 class BitcoinExchange
 {
@@ -32,8 +34,9 @@ class BitcoinExchange
 		BitcoinExchange &operator=(const BitcoinExchange &other);
 		~BitcoinExchange();
 
+		bool isFutureDate(int year, int month, int day);
 		bool isDateVaild(const std::string &date);
-		double parseValue(const std::string &value);
+		double parseValue(const std::string &value, double limit);
 		iterator searchDate(const std::string &date);
 		void uploadfile();
 		void printBtc(const std::string &date, const std::string &value);

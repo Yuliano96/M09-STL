@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BitcoinExchange.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/01 15:37:00 by ypacileo          #+#    #+#             */
-/*   Updated: 2026/05/09 23:16:26 by yuliano          ###   ########.fr       */
+/*   Updated: 2026/05/10 13:19:49 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 #include <stdexcept>
 #include <cstdlib>
 #include <cctype>
+#include <limits>
+#include <ctime>
 
 BitcoinExchange::BitcoinExchange(const std::string &Database, char delim):_dataBase(Database), _delim(delim)
 {
@@ -53,6 +55,30 @@ static std::string trim(const std::string &str)
 	return (str.substr(start, end - start));
 }
 
+bool BitcoinExchange::isFutureDate(int year, int month, int day)
+{
+	std::time_t now;
+	std::tm *current;
+	int current_year;
+	int current_month;
+	int current_day;
+
+	now = std::time(NULL);
+	current = std::localtime(&now);
+	if (!current)
+		return (false);
+	current_year = current->tm_year + 1900;
+	current_month = current->tm_mon + 1;
+	current_day = current->tm_mday;
+	if (year > current_year)
+		return (true);
+	if (year == current_year && month > current_month)
+		return (true);
+	if (year == current_year && month == current_month && day > current_day)
+		return (true);
+	return (false);
+}
+
 bool BitcoinExchange::isDateVaild(const std::string &date)
 {
 	int year;
@@ -80,10 +106,16 @@ bool BitcoinExchange::isDateVaild(const std::string &date)
 		days_month[1] = 29;
 	if (day < 1 || day > days_month[month - 1])
 		return (false);
+
+	if(isFutureDate(year, month, day))
+		return false;
+	
 	return (true);
+
+	
 }
 
-double BitcoinExchange::parseValue(const std::string &value)
+double BitcoinExchange::parseValue(const std::string &value, double limt)
 {
 	std::stringstream ss;
 	double number;
@@ -97,7 +129,7 @@ double BitcoinExchange::parseValue(const std::string &value)
 		throw std::runtime_error("Error: bad input => " + clean);
 	if (number < 0)
 		throw std::runtime_error("Error: not a positive number.");
-	if (number > 1000)
+	if (number > limt)
 		throw std::runtime_error("Error: too large a number.");
 	return (number);
 }
@@ -119,6 +151,7 @@ void BitcoinExchange::uploadfile()
 {
     std::ifstream in(_dataBase.c_str());
 	std::string line, date, value;
+	double num;
 	bool headerSkipped = false;
 	
     if (!in.is_open())
@@ -127,14 +160,24 @@ void BitcoinExchange::uploadfile()
     while (std::getline(in, line))
     {
         if (line.empty()) continue;
-		if (!headerSkipped && !isdigit(line[0])) 
+		if (!headerSkipped && !isdigit(static_cast<unsigned char>(line[0]))) 
 		{
             headerSkipped = true;
             continue;
         }
+		
         std::stringstream ss(line);
-		if (std::getline(ss, date, _delim) && std::getline(ss, value))
-        	mapData[date] = std::atof(value.c_str());
+		if (!std::getline(ss, date, _delim) || !std::getline(ss, value))
+        	throw std::invalid_argument("Error: Loading database");
+			
+		date = trim(date);
+		value = trim(value);
+		
+		if(!isDateVaild(date))
+			throw std::invalid_argument("Error: Loading database");
+		
+		num = parseValue(value, std::numeric_limits<int>::max());
+		mapData[date] = num;
     }
     in.close();
 }
@@ -153,7 +196,7 @@ void BitcoinExchange::printBtc(const std::string &date, const std::string &value
 			std::cerr << "Error: bad input => " << clean_date << std::endl;
 			return ;
 		}
-		number = parseValue(value);
+		number = parseValue(value, 1000);
 		itData = searchDate(clean_date);
 		if (itData == mapData.end())
 		{

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/30 21:44:24 by yuliano           #+#    #+#             */
-/*   Updated: 2026/05/09 23:15:05 by yuliano          ###   ########.fr       */
+/*   Updated: 2026/05/10 12:28:16 by ypacileo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int main(int argc, char **argv)
         while(std::getline(input, line))
         {
             if (line.empty()) continue;
-            if(!headerSkipped && !isdigit(line[0]))
+            if(!headerSkipped && !isdigit(static_cast<unsigned char>(line[0])))
             {
                 headerSkipped = true;
                 continue ;
@@ -62,6 +62,7 @@ int main(int argc, char **argv)
     catch(const std::exception& e)
     {
         std::cerr << e.what() << std::endl;
+        return (1);
     }
     
    
