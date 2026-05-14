@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BitcoinExchange.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ypacileo <ypacileo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yuliano <yuliano@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/01 15:37:00 by ypacileo          #+#    #+#             */
-/*   Updated: 2026/05/10 13:19:49 by ypacileo         ###   ########.fr       */
+/*   Updated: 2026/05/14 18:27:04 by yuliano          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,9 +81,7 @@ bool BitcoinExchange::isFutureDate(int year, int month, int day)
 
 bool BitcoinExchange::isDateVaild(const std::string &date)
 {
-	int year;
-	int month;
-	int day;
+	int year, month, day;
 	size_t i;
 					//  0   1    2   3   4   5   6  7    8   9  10 11
 	int days_month[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
@@ -111,8 +109,6 @@ bool BitcoinExchange::isDateVaild(const std::string &date)
 		return false;
 	
 	return (true);
-
-	
 }
 
 double BitcoinExchange::parseValue(const std::string &value, double limt)
